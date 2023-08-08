@@ -1,11 +1,26 @@
-// Write a program that takes an integer value K (i.e. shift value between +/- 26) and a plaintext
-// message and returns the corresponding Caeasar cipher. The program should also implement a
-// decryption routine that reconstructs the original plaintext from the ciphertext.
+// Write a program that asks user for key and plain text and displays the corresponding Vigenere cipher.
 
 #include<iostream>
 using namespace std;
 
-string encrypt(string plain, int key)
+string keygen(string plain, string key)
+{
+    for (int i = 0; i < plain.length(); i++)
+    {
+        if (plain.length() == i)
+        {
+            i = 0;
+        }
+        if (key.length() == plain.length())
+        {
+            break;
+        }
+        key = key + key[i];
+    }
+    return key;
+}
+
+string encrypt(string plain, string key)
 {
     string c, p;
     p = plain;
@@ -13,17 +28,17 @@ string encrypt(string plain, int key)
     {
         if (isupper(p[i]))
         {
-            c = c + char((int(p[i]) + key - 65 ) % 26 + 65);
+            c = c + char((p[i] + key[i]) % 26 + 65);
         }
         else
         {
-            c = c + char((int(p[i]) + key - 97 ) % 26 + 97);
+            c = c + char((p[i] + key[i]) % 26 + 97);
         }
     }
     return c;
 }
 
-string decrypt(string cipher, int key)
+string decrypt(string cipher, string key)
 {
     string  p, c;
     c = cipher;
@@ -31,19 +46,19 @@ string decrypt(string cipher, int key)
     {
         if (isupper(c[i]))
         {
-            p = p + char((int(c[i]) - key - 65 ) % 26 + 65);
+            p = p + char((c[i] - key[i] + 26) % 26 + 65);
         }
         else
         {
-            p = p + char((int(c[i]) - key - 97 ) % 26 + 97);
+            p = p + char((c[i] - key[i] + 26) % 26 + 97);
         }
     }
     return p;
 }
 
 int main(){
-    string str, c, p;
-    int key, choice;
+    string  key, c, p, str,  keys; 
+    int choice;
     while (choice != 3)
     {
         cout << "Enter 1 for encryption" <<endl;
@@ -57,14 +72,16 @@ int main(){
                 cin >> str;
                 cout << "Enter the key ";
                 cin >> key;
-                cout << "The cyphered string is " << encrypt(str, key) << endl;
+                keys = keygen(str, key);
+                cout << "The cyphered string is " << encrypt(str, keys) << endl;
                 break;
             case 2:
                 cout << "Enter the string to decipher: ";
                 cin >> str;
                 cout << "Enter the key ";
                 cin >> key;
-                cout << "The deciphered string is " << decrypt(str, key) << endl;
+                keys = keygen(str, key);
+                cout << "The deciphered string is " << decrypt(str, keys) << endl;
                 break;
             case 3:
                 break;
